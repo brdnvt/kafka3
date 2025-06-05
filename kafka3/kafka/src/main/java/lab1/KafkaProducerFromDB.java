@@ -19,7 +19,7 @@ public class KafkaProducerFromDB {
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(kafkaProperties);
 
-        String jdbcUrl = "jdbc:postgresql://localhost:5430/kafka";
+        String jdbcUrl = "jdbc:postgresql://localhost:5430/postgres_db";
 
 
         try (Connection conn = DriverManager.getConnection(jdbcUrl, USER, PASSWORD)) {
