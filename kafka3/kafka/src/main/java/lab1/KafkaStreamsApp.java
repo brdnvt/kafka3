@@ -12,7 +12,7 @@ import org.apache.kafka.streams.kstream.Branched;
 import java.util.Properties;
 
 public class KafkaStreamsApp {
-    private static final String INPUT_TOPIC = "coffee-products";
+    private static final String INPUT_TOPIC = "coffee_products";
     private static final String NO_MILK_TOPIC = "no_milk_drinks";
     private static final String COCONUT_MILK_TOPIC = "coconut_milk_drinks";
     private static final String OTHER_MILK_TOPIC = "other_milk_drinks";
