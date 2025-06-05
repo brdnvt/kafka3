@@ -14,7 +14,6 @@ public class KafkaConfig {
     private static final String CSV_FILE_PATH = "starbucks.csv";
 
     public static void main(String[] args) {
-        // Налаштування Producer
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -23,12 +22,10 @@ public class KafkaConfig {
         try (KafkaProducer<String, String> producer = new KafkaProducer<>(props);
              CSVReader reader = new CSVReader(new FileReader(CSV_FILE_PATH))) {
             
-            // Пропускаємо заголовок
             reader.readNext();
             
             String[] line;
             while ((line = reader.readNext()) != null) {
-                // Створюємо JSON з даних CSV
                 String json = String.format(
                     "{\"product_name\":\"%s\",\"size\":\"%s\",\"milk\":%s,\"whip\":%s," +
                     "\"serv_size_m_l\":%s,\"calories\":%s,\"total_fat_g\":%s,\"saturated_fat_g\":%s," +
@@ -38,7 +35,6 @@ public class KafkaConfig {
                     line[8], line[9], line[10], line[11], line[12], line[13], line[14]
                 );
 
-                // Відправляємо повідомлення в Kafka
                 ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC_NAME, json);
                 producer.send(record, (metadata, exception) -> {
                     if (exception == null) {

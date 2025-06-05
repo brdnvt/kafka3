@@ -14,7 +14,6 @@ public class CsvToPostgresLoader {
 
     public static void main(String[] args) {
         try {
-            // Перевірка підключення до бази даних
             System.out.println("Спроба підключення до бази даних...");
             System.out.println("URL: " + DB_URL);
             System.out.println("Користувач: " + USER);
@@ -22,19 +21,16 @@ public class CsvToPostgresLoader {
             try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
                 System.out.println("Підключення до бази даних успішне!");
                 
-                // Перевірка схеми
                 DatabaseMetaData metaData = conn.getMetaData();
                 ResultSet tables = metaData.getTables(null, null, "coffee_products", new String[]{"TABLE"});
                 if (tables.next()) {
                     System.out.println("Таблиця coffee_products вже існує");
-                    // Видаляємо існуючу таблицю
                     try (Statement stmt = conn.createStatement()) {
                         stmt.execute("DROP TABLE IF EXISTS coffee_products");
                         System.out.println("Існуючу таблицю видалено");
                     }
                 }
                 
-                // Створюємо таблицю
                 System.out.println("Створюємо нову таблицю...");
                 try (Statement stmt = conn.createStatement()) {
                     stmt.execute("CREATE TABLE IF NOT EXISTS coffee_products (" +
@@ -58,12 +54,10 @@ public class CsvToPostgresLoader {
                     System.out.println("Таблицю створено успішно");
                 }
 
-                // Перевіряємо, чи файл існує
                 if (!new java.io.File(CSV_FILE_PATH).exists()) {
                     throw new RuntimeException("Файл " + CSV_FILE_PATH + " не знайдено!");
                 }
 
-                // Завантажуємо дані
                 try (CSVReader reader = new CSVReader(new FileReader(CSV_FILE_PATH))) {
                     String[] nextLine;
                     boolean isFirstLine = true;
@@ -81,21 +75,21 @@ public class CsvToPostgresLoader {
                             continue;
                         }
 
-                        stmt.setString(1, nextLine[0]);  // product_name
-                        stmt.setString(2, nextLine[1]);  // size
-                        stmt.setInt(3, Integer.parseInt(nextLine[2]));  // milk
-                        stmt.setInt(4, Integer.parseInt(nextLine[3]));  // whip
-                        stmt.setInt(5, Integer.parseInt(nextLine[4]));  // serv_size_m_l
-                        stmt.setInt(6, Integer.parseInt(nextLine[5]));  // calories
-                        stmt.setDouble(7, Double.parseDouble(nextLine[6]));  // total_fat_g
-                        stmt.setDouble(8, Double.parseDouble(nextLine[7]));  // saturated_fat_g
-                        stmt.setDouble(9, Double.parseDouble(nextLine[8]));  // trans_fat_g
-                        stmt.setInt(10, Integer.parseInt(nextLine[9]));  // cholesterol_mg
-                        stmt.setInt(11, Integer.parseInt(nextLine[10]));  // sodium_mg
-                        stmt.setDouble(12, Double.parseDouble(nextLine[11]));  // total_carbs_g
-                        stmt.setDouble(13, Double.parseDouble(nextLine[12]));  // fiber_g
-                        stmt.setDouble(14, Double.parseDouble(nextLine[13]));  // sugar_g
-                        stmt.setInt(15, Integer.parseInt(nextLine[14]));  // caffeine_mg
+                        stmt.setString(1, nextLine[0]);  
+                        stmt.setString(2, nextLine[1]);  
+                        stmt.setInt(3, Integer.parseInt(nextLine[2]));  
+                        stmt.setInt(4, Integer.parseInt(nextLine[3]));  
+                        stmt.setInt(5, Integer.parseInt(nextLine[4]));  
+                        stmt.setInt(6, Integer.parseInt(nextLine[5]));  
+                        stmt.setDouble(7, Double.parseDouble(nextLine[6]));  
+                        stmt.setDouble(8, Double.parseDouble(nextLine[7]));  
+                        stmt.setDouble(9, Double.parseDouble(nextLine[8]));  
+                        stmt.setInt(10, Integer.parseInt(nextLine[9]));  
+                        stmt.setInt(11, Integer.parseInt(nextLine[10]));  
+                        stmt.setDouble(12, Double.parseDouble(nextLine[11]));  
+                        stmt.setDouble(13, Double.parseDouble(nextLine[12]));  
+                        stmt.setDouble(14, Double.parseDouble(nextLine[13]));  
+                        stmt.setInt(15, Integer.parseInt(nextLine[14]));  
 
                         stmt.executeUpdate();
                     }

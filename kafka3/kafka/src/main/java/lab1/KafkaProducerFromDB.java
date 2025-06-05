@@ -28,7 +28,6 @@ public class KafkaProducerFromDB {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                // Припустимо, що вам потрібно отримати значення полів з таблиці
                 String productName = resultSet.getString("product_name");
                 String size = resultSet.getString("size");
                 int milk = resultSet.getInt("milk");
@@ -45,7 +44,7 @@ public class KafkaProducerFromDB {
                         + "\"calories\":" + calories
                         + "}";
 
-                producer.send(new ProducerRecord<>("starbucks_data", productName, message));
+                producer.send(new ProducerRecord<>("coffee_products", productName, message));
             }
 
         } catch (SQLException e) {
