@@ -27,16 +27,13 @@ public class KafkaStreamsApp {
         StreamsBuilder builder = new StreamsBuilder();
         Gson gson = new Gson();
 
-        // Створюємо вхідний потік
         KStream<String, String> inputStream = builder.stream(INPUT_TOPIC);
 
-        // Фільтруємо напої з калоріями > 200
         KStream<String, String> highCalorieDrinks = inputStream.filter((key, value) -> {
             JsonObject json = gson.fromJson(value, JsonObject.class);
             return json.get("calories").getAsInt() > 200;
         });
 
-        // Розділяємо потік на три гілки
         highCalorieDrinks.split()
             .branch((key, value) -> {
                 JsonObject json = gson.fromJson(value, JsonObject.class);
@@ -52,11 +49,9 @@ public class KafkaStreamsApp {
                 return milk != 0 && milk != 5;
             }, Branched.withConsumer(ks -> ks.to(OTHER_MILK_TOPIC)));
 
-        // Запускаємо Kafka Streams
         KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.start();
 
-        // Додаємо shutdown hook для коректного завершення
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
     }
 }
